@@ -522,11 +522,19 @@ public class IteratorsTest extends TestCase {
     assertEquals(expected, actual);
   }
 
+  // INICIO dos testes cycle(T... elements)
+
+  // Verifica se o metodo hasNext retorna falso quando o iterador esta vazio.
+
   public void testCycleOfEmpty() {
     // "<String>" for javac 1.5.
     Iterator<String> cycle = Iterators.<String>cycle();
     assertFalse(cycle.hasNext());
   }
+
+  // Em um iterador com um elemento, independente do numero de vezes que forem chamados,
+  // o metodo hasNext precisa retornar verdadeiro e o metodo next sempre deve retornar o unico elemento
+  // que esta no iterador, pois em um ciclo de um elemento nao pode ter nenhum outro diferente dele mesmo.
 
   public void testCycleOfOne() {
     Iterator<String> cycle = Iterators.cycle("a");
@@ -535,6 +543,9 @@ public class IteratorsTest extends TestCase {
       assertEquals("a", cycle.next());
     }
   }
+
+  // Em um iterador com um elemento, quando este unico elemento eh removido, o iterador
+  // precisa estar vazio.
 
   public void testCycleOfOneWithRemove() {
     Iterable<String> iterable = Lists.newArrayList("a");
@@ -546,6 +557,10 @@ public class IteratorsTest extends TestCase {
     assertFalse(cycle.hasNext());
   }
 
+  // Instacia um novo iterador ciclo com dois elementos,
+  // em duas iteracoes, verifica se ciclo possiu um proximo elemento,
+  // hasNext deve retornar verdadeiro, e o elemento correspondente deve estar correto.
+
   public void testCycleOfTwo() {
     Iterator<String> cycle = Iterators.cycle("a", "b");
     for (int i = 0; i < 3; i++) {
@@ -555,6 +570,9 @@ public class IteratorsTest extends TestCase {
       assertEquals("b", cycle.next());
     }
   }
+
+  // Em um iterador com dois elementos, quando removemos um elemento, o ciclo devera conter apenas
+  // um elemento. Quando o segundo elemento do ciclo for removido, o iterador devera estar vazio,
 
   public void testCycleOfTwoWithRemove() {
     Iterable<String> iterable = Lists.newArrayList("a", "b");
@@ -576,6 +594,10 @@ public class IteratorsTest extends TestCase {
     assertFalse(cycle.hasNext());
   }
 
+  // Em um iterador com dois elementos, metodo hasNext retorna verdadeiro por existir o elemento a e b,
+  // quando tentamos remove-lo sem chamar o metodo next, a excecao IllegalStateExeception deve ser levantada
+  // nesse caso. Se a excecao nao for levantada, o teste deve falhar.
+
   public void testCycleRemoveWithoutNext() {
     Iterator<String> cycle = Iterators.cycle("a", "b");
     assertTrue(cycle.hasNext());
@@ -585,6 +607,10 @@ public class IteratorsTest extends TestCase {
     } catch (IllegalStateException expected) {
     }
   }
+
+  // Ao tentar remover o elemento do ciclo duas vezes seguidas, a excecao IllegalStateException deve
+  // ser levantada, caso contrario o teste deve falhar, pois nao deve ser possivel deletar o mesmo elemento duas
+  // vezes.
 
   public void testCycleRemoveSameElementTwice() {
     Iterator<String> cycle = Iterators.cycle("a", "b");
@@ -596,6 +622,8 @@ public class IteratorsTest extends TestCase {
     } catch (IllegalStateException expected) {
     }
   }
+
+  // FIM testes do metodo cycle(T... elements)
 
   public void testCycleWhenRemoveIsNotSupported() {
     Iterable<String> iterable = asList("a", "b");
